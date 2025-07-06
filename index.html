@@ -81,6 +81,24 @@
     .sidebar.expanded .link-text {
       opacity: 1;
     }
+
+    /* Button styling */
+    .routine-button {
+      background: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 20px;
+    }
+
+    .routine-button:hover {
+      background: #45a049;
+    }
+
   </style>
 </head>
 <body>
@@ -108,11 +126,19 @@
   <div class="content">
     <h1>Welcome to My Notes Organizer</h1>
     <p>Organize your routine and class notes seamlessly.</p>
+
+    <button class="routine-button" onclick="openRoutineImage()">
+      View Routine (Image Form)
+    </button>
   </div>
 
   <script>
     function toggleSidebar() {
       document.querySelector('.sidebar').classList.toggle('expanded');
+    }
+
+    function openRoutineImage() {
+      window.open('routine-image.jpg', '_blank');
     }
   </script>
 </body>
