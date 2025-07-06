@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Notes Organizer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: #222;
+      width: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0;
+      transition: width 0.3s ease;
+      overflow: hidden;
+    }
+
+    .sidebar.expanded {
+      width: 200px;
+    }
+
+    .sidebar .toggle-btn {
+      color: white;
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      width: 100%;
+    }
+
+    .sidebar li {
+      width: 100%;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      color: white;
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+
+    .sidebar a:hover {
+      background: #444;
+    }
+
+    .sidebar i {
+      margin-right: 10px;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    .content {
+      flex: 1;
+      padding: 40px;
+      color: white;
+    }
+
+    .sidebar .link-text {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .sidebar.expanded .link-text {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="toggle-btn" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </div>
+    <ul>
+      <li>
+        <a href="index.html">
+          <i class="fas fa-home"></i>
+          <span class="link-text">Home</span>
+        </a>
+      </li>
+      <li>
+        <a href="routine.html">
+          <i class="fas fa-calendar"></i>
+          <span class="link-text">Routine</span>
+        </a>
+      </li>
+      <!-- Add more links later -->
+    </ul>
+  </div>
+
+  <div class="content">
+    <h1>Welcome to My Notes Organizer</h1>
+    <p>Organize your routine and class notes seamlessly.</p>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      document.querySelector('.sidebar').classList.toggle('expanded');
+    }
+  </script>
+</body>
+</html>
