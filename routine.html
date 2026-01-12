@@ -1,358 +1,397 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSE 2A Weekly Schedule</title>
+
     <style>
         /* ========================================
-           BASIC STYLING AND LAYOUT
+           THEME SYSTEM (LIGHT + DARK)
            ========================================
-           Main container and typography styles.
-           Modify these for overall appearance changes.
+           We use CSS Variables so switching themes
+           is clean and visually consistent.
            ======================================== */
-        
+
+        :root {
+            /* ---- Light Theme Palette (Fresh, modern) ---- */
+            --bg: linear-gradient(135deg, #c3dafe 0%, #a78bfa 50%, #f0abfc 100%);
+            --container-bg: rgba(255, 255, 255, 0.92);
+            --container-border: rgba(255, 255, 255, 0.35);
+            --text: #0f172a;
+            --muted: #64748b;
+
+            --table-bg: #ffffff;
+            --border: #e2e8f0;
+
+            --header-bg: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+            --timeslot-bg: linear-gradient(135deg, #ec4899 0%, #f97316 100%);
+            --day-bg: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+
+            --break-bg: linear-gradient(135deg, #fde68a 0%, #fb7185 100%);
+            --break-text: #0f172a;
+
+            --shadow: 0 10px 35px rgba(15, 23, 42, 0.12);
+
+            --button-bg: rgba(15, 23, 42, 0.07);
+            --button-border: rgba(15, 23, 42, 0.18);
+            --button-text: #0f172a;
+            --button-hover: rgba(15, 23, 42, 0.12);
+        }
+
+        /* ---- Dark Theme Palette (Premium neon-night) ---- */
+        body.dark {
+            --bg: radial-gradient(circle at top left, #0b1220 0%, #070b12 45%, #03050a 100%);
+            --container-bg: rgba(17, 24, 39, 0.78);
+            --container-border: rgba(255, 255, 255, 0.12);
+            --text: #e5e7eb;
+            --muted: #9ca3af;
+
+            --table-bg: rgba(2, 6, 23, 0.55);
+            --border: rgba(148, 163, 184, 0.2);
+
+            --header-bg: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 55%, #db2777 100%);
+            --timeslot-bg: linear-gradient(135deg, #f97316 0%, #ec4899 55%, #8b5cf6 100%);
+            --day-bg: linear-gradient(135deg, #22c55e 0%, #06b6d4 55%, #3b82f6 100%);
+
+            --break-bg: linear-gradient(135deg, #facc15 0%, #fb7185 60%, #a78bfa 100%);
+            --break-text: #0b1220;
+
+            --shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+
+            --button-bg: rgba(255, 255, 255, 0.08);
+            --button-border: rgba(255, 255, 255, 0.18);
+            --button-text: #e5e7eb;
+            --button-hover: rgba(255, 255, 255, 0.14);
+        }
+
+        /* ========================================
+           BASE STYLING
+           ======================================== */
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            background: var(--bg);
+            color: var(--text);
+
+            transition: background 0.35s ease, color 0.35s ease;
         }
-        
+
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
+            background: var(--container-bg);
+            backdrop-filter: blur(14px);
+            border-radius: 18px;
             padding: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--container-border);
+            transition: background 0.35s ease, border-color 0.35s ease;
+            position: relative;
         }
-        
+
+        /* ========================================
+           DARK MODE BUTTON
+           ======================================== */
+
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--button-border);
+            background: var(--button-bg);
+            color: var(--button-text);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95em;
+
+            transition: transform 0.2s ease, background 0.25s ease;
+            user-select: none;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-1px);
+            background: var(--button-hover);
+        }
+
+        .toggle-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #22c55e 0%, #3b82f6 100%);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+        body.dark .toggle-dot {
+            background: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
+            box-shadow: 0 0 12px rgba(236, 72, 153, 0.55);
+        }
+
         /* ========================================
            HEADER STYLES
-           ========================================
-           Title and subtitle styling.
-           Edit the HTML content below to change text.
            ======================================== */
-        
+
         h1 {
             text-align: center;
-            color: #2c3e50;
             margin-bottom: 10px;
             font-size: 2.5em;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            font-weight: 800;
+            letter-spacing: 0.5px;
         }
-        
+
         .subtitle {
             text-align: center;
-            color: #7f8c8d;
+            color: var(--muted);
             margin-bottom: 30px;
             font-size: 1.2em;
             font-weight: 500;
+            transition: color 0.35s ease;
         }
-        
+
         /* ========================================
            TABLE LAYOUT AND STRUCTURE
-           ========================================
-           Basic table styling, borders, and spacing.
            ======================================== */
-        
+
         .table-container {
             overflow-x: auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
-            border-radius: 10px;
+            background: var(--table-bg);
+            border-radius: 12px;
             overflow: hidden;
+            transition: background 0.35s ease;
         }
-        
-        th, td {
+
+        th,
+        td {
             padding: 12px 8px;
             text-align: center;
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--border);
             font-size: 0.9em;
             vertical-align: middle;
+            transition: border-color 0.35s ease;
         }
-        
+
         /* ========================================
            HEADER ROW STYLES
-           ========================================
-           Days and time slot header styling.
            ======================================== */
-        
+
         th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--header-bg);
             color: white;
-            font-weight: 600;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
         }
-        
+
         .time-slot {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: var(--timeslot-bg);
             color: white;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.85em;
             width: 120px;
             min-width: 120px;
         }
-        
+
         .day-header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: var(--day-bg);
             color: white;
-            font-weight: 600;
-            font-size: 1.1em;
+            font-weight: 800;
+            font-size: 1.05em;
         }
-        
+
         /* ========================================
            SPECIAL CELLS
-           ========================================
-           Break slots and empty cells styling.
            ======================================== */
-        
+
         .break-slot {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            color: #8b4513;
-            font-weight: 600;
+            background: var(--break-bg);
+            color: var(--break-text);
+            font-weight: 800;
         }
-        
+
         .no-class {
-            background: #f8f9fa;
-            color: #6c757d;
+            background: rgba(148, 163, 184, 0.12);
+            color: var(--muted);
             font-style: italic;
         }
-        
+
         /* ========================================
            CONTENT STYLING WITHIN CELLS
-           ========================================
-           Subject names, faculty, and room styling.
            ======================================== */
-        
+
         .subject {
-            font-weight: 600;
-            color: #2c3e50;
+            font-weight: 700;
             line-height: 1.3;
         }
-        
+
         .faculty {
             font-size: 0.8em;
-            color: #7f8c8d;
+            color: rgba(255, 255, 255, 0.9);
             font-style: italic;
         }
-        
+
         .room {
             font-size: 0.8em;
-            color: #95a5a6;
-            font-weight: 500;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 600;
         }
-        
+
+        /* In light theme, allow darker text for readability in some blocks */
+        body:not(.dark) td .faculty,
+        body:not(.dark) td .room {
+            color: rgba(15, 23, 42, 0.7);
+        }
+
         /* ========================================
            SUBJECT-SPECIFIC COLOR CLASSES
-           ========================================
-           
-           To change a subject's color, modify the corresponding 
-           CSS class below. Each subject has its own unique color scheme.
-           
-           To add a new subject:
-           1. Create a new CSS class following the naming pattern
-           2. Choose a unique gradient color combination
-           3. Set appropriate text colors for readability
-           4. Apply the class to the HTML table cells
-           
-           Current subjects and their class names:
-           - Digital Electronics: .digital-electronics
-           - Mathematics III: .mathematics  
-           - Analog Electronics: .analog-electronics
-           - Data Structures: .data-structures
-           - IT Workshop: .it-workshop
-           - Principles of Management: .principles-management
-           - Pre-Placement (Programming): .pre-placement-programming
-           - Pre-Placement (Aptitude): .pre-placement-aptitude
-           - ESP III: .esp
-           - SDP III: .sdp
-           - Sports: .sports
-           - EAA: .eaa
+           (Works in both themes)
            ======================================== */
-        
-        /* Digital Electronics - Blue-purple gradient */
+
         .digital-electronics {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-left: 4px solid #4a55a3;
+            background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+            border-left: 4px solid rgba(255, 255, 255, 0.55);
             color: white;
         }
-        
-        .digital-electronics .subject {
-            color: white;
-        }
-        
-        /* Mathematics III - Orange-peach gradient */
+
         .mathematics {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            border-left: 4px solid #f39c12;
-            color: #8b4513;
+            background: linear-gradient(135deg, #fbbf24 0%, #fb7185 100%);
+            border-left: 4px solid rgba(255, 255, 255, 0.55);
+            color: #0b1220;
         }
-        
-        .mathematics .subject {
-            color: #8b4513;
+
+        .mathematics .faculty,
+        .mathematics .room {
+            color: rgba(11, 18, 32, 0.75) !important;
         }
-        
-        /* Analog Electronics - Teal-pink gradient */
+
         .analog-electronics {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            border-left: 4px solid #26d0ce;
-            color: #2c3e50;
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            border-left: 4px solid rgba(255, 255, 255, 0.55);
+            color: white;
         }
-        
-        .analog-electronics .subject {
-            color: #2c3e50;
-        }
-        
-        /* Data Structures - Purple-yellow gradient */
+
         .data-structures {
-            background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%);
-            border-left: 4px solid #8e44ad;
-            color: #2c3e50;
+            background: linear-gradient(135deg, #22c55e 0%, #06b6d4 100%);
+            border-left: 4px solid rgba(255, 255, 255, 0.55);
+            color: white;
         }
-        
-        .data-structures .subject {
-            color: #2c3e50;
-        }
-        
-        /* IT Workshop - Blue-cyan gradient */
+
         .it-workshop {
-            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
-            border-left: 4px solid #3498db;
-            color: #2c3e50;
+            background: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
+            border-left: 4px solid rgba(255, 255, 255, 0.55);
+            color: white;
         }
-        
-        .it-workshop .subject {
-            color: #2c3e50;
-        }
-        
-        /* Principles of Management - Gold-teal gradient */
+
         .principles-management {
-            background: linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%);
-            border-left: 4px solid #f39c12;
-            color: #2c3e50;
+            background: linear-gradient(135deg, #a78bfa 0%, #6366f1 100%);
+            border-left: 4px solid rgba(255, 255, 255, 0.55);
+            color: white;
         }
-        
-        .principles-management .subject {
-            color: #2c3e50;
-        }
-        
-        /* Pre-Placement Programming - Pink-purple gradient */
+
         .pre-placement-programming {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-            border-left: 4px solid #e74c3c;
-            color: #2c3e50;
+            background: linear-gradient(135deg, #fb7185 0%, #f97316 100%);
+            border-left: 4px solid rgba(255, 255, 255, 0.55);
+            color: white;
         }
-        
-        .pre-placement-programming .subject {
-            color: #2c3e50;
-        }
-        
-        /* Pre-Placement Aptitude - Purple-pink gradient */
+
         .pre-placement-aptitude {
-            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
-            border-left: 4px solid #9b59b6;
-            color: #2c3e50;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            border-left: 4px solid rgba(255, 255, 255, 0.55);
+            color: white;
         }
-        
-        .pre-placement-aptitude .subject {
-            color: #2c3e50;
-        }
-        
-        /* ESP III - Peach-pink gradient */
+
         .esp {
-            background: linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%);
-            border-left: 4px solid #ff6b6b;
-            color: #2c3e50;
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            border-left: 4px solid rgba(255, 255, 255, 0.55);
+            color: white;
         }
-        
-        .esp .subject {
-            color: #2c3e50;
-        }
-        
-        /* SDP III - Green-yellow gradient */
+
         .sdp {
-            background: linear-gradient(135deg, #96fbc4 0%, #f9f586 100%);
-            border-left: 4px solid #27ae60;
-            color: #2c3e50;
+            background: linear-gradient(135deg, #14b8a6 0%, #22c55e 100%);
+            border-left: 4px solid rgba(255, 255, 255, 0.55);
+            color: white;
         }
-        
-        .sdp .subject {
-            color: #2c3e50;
-        }
-        
-        /* Sports - Pink-red gradient */
+
         .sports {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border-left: 4px solid #e91e63;
+            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+            border-left: 4px solid rgba(255, 255, 255, 0.55);
             color: white;
         }
-        
-        .sports .subject {
-            color: white;
-        }
-        
-        /* EAA - Teal-green gradient */
+
         .eaa {
-            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
-            border-left: 4px solid #16a085;
+            background: linear-gradient(135deg, #0ea5e9 0%, #22c55e 100%);
+            border-left: 4px solid rgba(255, 255, 255, 0.55);
             color: white;
         }
-        
-        .eaa .subject {
-            color: white;
-        }
-        
+
         /* ========================================
-           HOVER EFFECTS AND ANIMATIONS
-           ========================================
-           Interactive effects when hovering over rows.
+           HOVER EFFECTS
            ======================================== */
-        
+
         tr:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+            transition: all 0.25s ease;
         }
-        
+
         /* ========================================
            RESPONSIVE DESIGN
-           ========================================
-           Mobile-friendly adjustments for smaller screens.
            ======================================== */
-        
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
             }
-            
+
             h1 {
                 font-size: 2em;
             }
-            
-            th, td {
+
+            th,
+            td {
                 padding: 8px 4px;
                 font-size: 0.8em;
             }
-            
+
             .time-slot {
                 width: 60px;
                 min-width: 60px;
             }
+
+            .theme-toggle {
+                font-size: 0.88em;
+                padding: 9px 12px;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
+
+        <!-- Top Right Theme Toggle -->
+        <div class="top-bar">
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <span class="toggle-dot"></span>
+                <span id="themeLabel">Dark Mode</span>
+            </button>
+        </div>
         <!-- ========================================
              HEADER SECTION
              ========================================
@@ -361,8 +400,8 @@
              ======================================== -->
         <h1>CSE 2A Weekly Schedule</h1>
         <p class="subtitle">University of Engineering & Management, Kolkata<br>
-        Department of Computer Science & Engineering - ODD Semester 2025</p>
-        
+            Department of Computer Science & Engineering - EVEN Semester</p>
+
         <div class="table-container">
             <table>
                 <thead>
@@ -387,208 +426,199 @@
                 </thead>
                 <tbody>
                     <!-- ========================================
-                         MONDAY SCHEDULE
-                         ========================================
-                         Edit the classes below for Monday.
-                         Each cell should have:
-                         - class="subject-name" (matches CSS classes above)
-                         - subject name in <div class="subject">
-                         - faculty in <div class="faculty">
-                         - room in <div class="room">
-                         ======================================== -->
+     MONDAY SCHEDULE (UPDATED)
+     ========================================
+     Source: EVEN Semester 2026 - Class Schedule (Image)
+     Changes applied:
+     - 7th Period updated to "Data Analytics" (NP) in B3 Seminar Hall
+     ======================================== -->
                     <tr>
                         <td class="day-header">MONDAY</td>
-                        
-                        <!-- 1st Period: Digital Electronics Theory -->
+
+                        <!-- 1st Period: Design & Analysis of Algorithms -->
                         <td class="digital-electronics">
-                            <div class="subject">Digital Electronics</div>
-                            <div class="faculty">SKG</div>
-                            <div class="room">B1 LG 2.5</div>
+                            <div class="subject">Design & Analysis of Algorithms</div>
+                            <div class="faculty">SKM</div>
+                            <div class="room">B1 LG 3.5</div>
                         </td>
-                        
-                        <!-- 2nd Period: Mathematics III -->
+
+                        <!-- 2nd Period: Discrete Mathematics -->
                         <td class="mathematics">
-                            <div class="subject">Mathematics - III</div>
-                            <div class="faculty">ADN</div>
-                            <div class="room">B1 LG 2.6</div>
+                            <div class="subject">Discrete Mathematics</div>
+                            <div class="faculty">RMC</div>
+                            <div class="room">B1 LG 3.5</div>
                         </td>
-                        
-                        <!-- 3rd & 4th Period: Analog Electronics Lab (2-hour session) -->
+
+                        <!-- 3rd & 4th Period: COA Lab (2-hour continuous session) -->
                         <td class="analog-electronics">
-                            <div class="subject">Analog Electronics Lab</div>
-                            <div class="faculty">AG, SDY</div>
-                            <div class="room">CCFL - I</div>
-                            <!-- NOTE: This is a 2-hour lab session -->
+                            <div class="subject">Computer Organization & Architecture Laboratory</div>
+                            <div class="faculty">NC, AG, SUP, SDY, BBS, RJC</div>
+                            <div class="room">B2 LG 2.3 &amp; B2 LG 2.4</div>
                         </td>
                         <td class="analog-electronics">
-                            <div class="subject">Analog Electronics Lab</div>
-                            <div class="faculty">AG, SDY</div>
-                            <div class="room">CCFL - I</div>
-                            <!-- NOTE: Continuation of 2-hour lab -->
+                            <div class="subject">Computer Organization & Architecture Laboratory</div>
+                            <div class="faculty">NC, AG, SUP, SDY, BBS, RJC</div>
+                            <div class="room">B2 LG 2.3 &amp; B2 LG 2.4</div>
                         </td>
-                        
+
                         <!-- Break Period -->
                         <td class="break-slot">BREAK</td>
-                        
-                        <!-- 5th Period: Data Structures Theory -->
+
+                        <!-- 5th Period: Computer Organization & Architecture -->
                         <td class="data-structures">
-                            <div class="subject">Data structure & Algorithms</div>
-                            <div class="faculty">SKM</div>
-                            <div class="room">B1 LG 2.6</div>
+                            <div class="subject">Computer Organization &amp; Architecture</div>
+                            <div class="faculty">NC</div>
+                            <div class="room">B3 Seminar Hall</div>
                         </td>
-                        
-                        <!-- 6th Period: IT Workshop Theory -->
+
+                        <!-- 6th Period: Advanced Programming (OOP) -->
                         <td class="it-workshop">
-                            <div class="subject">IT Workshop</div>
-                            <div class="faculty">MCY</div>
-                            <div class="room">B1 LG 2.6</div>
+                            <div class="subject">Advanced Programming (OOP)</div>
+                            <div class="faculty">SDH</div>
+                            <div class="room">B3 Seminar Hall</div>
                         </td>
-                        
-                        <!-- 7th Period: Principles of Management -->
+
+                        <!-- 7th Period: Data Analytics (UPDATED) -->
                         <td class="principles-management">
-                            <div class="subject">Principles of Management</div>
+                            <div class="subject">Data Analytics</div>
                             <div class="faculty">NP</div>
-                            <div class="room">B1 LG 2.6</div>
+                            <div class="room">B3 Seminar Hall</div>
                         </td>
-                        
-                        <!-- 8th Period: Sports -->
+
+                        <!-- 8th Period: EAA -->
                         <td class="sports">
-                            <div class="subject">Sports</div>
+                            <div class="subject">EAA</div>
                             <div class="faculty">-</div>
                             <div class="room">-</div>
                         </td>
                     </tr>
-                    
                     <!-- ========================================
-                         TUESDAY SCHEDULE
-                         ========================================
-                         Tuesday classes with special focus on 
-                         Pre-Placement Training and Lab work.
-                         ======================================== -->
+     TUESDAY SCHEDULE (UPDATED)
+     ========================================
+     Source: EVEN Semester 2026 - Class Schedule (Image)
+     Key Notes:
+     - Finance & Accounting runs for 3rd + 4th period
+     - Pre-Placement Training (Programming) runs for 6th + 7th
+     ======================================== -->
                     <tr>
                         <td class="day-header">TUESDAY</td>
-                        
-                        <!-- 1st & 2nd Period: Pre-Placement Training (Programming) -->
+
+                        <!-- 1st Period: Artificial Intelligence & Machine Learning -->
                         <td class="pre-placement-programming">
-                            <div class="subject">Pre-Placement Training (Programming)</div>
-                            <div class="faculty">SKG, BM, ANG, SND, VP</div>
-                            <div class="room">B3 LG 0.2 & B3 LG 0.3</div>
-                            <!-- NOTE: Multiple faculty, students split across 2 rooms -->
+                            <div class="subject">Artificial Intelligence &amp; Machine Learning</div>
+                            <div class="faculty">ADN</div>
+                            <div class="room">B3 Seminar Hall</div>
                         </td>
+
+                        <!-- 2nd Period: Design & Analysis of Algorithms -->
                         <td class="pre-placement-programming">
-                            <div class="subject">Pre-Placement Training (Programming)</div>
-                            <div class="faculty">SKG, BM, ANG, SND, VP</div>
-                            <div class="room">B3 LG 0.2 & B3 LG 0.3</div>
-                            <!-- NOTE: Continuation of programming session -->
+                            <div class="subject">Design &amp; Analysis of Algorithms</div>
+                            <div class="faculty">SKM</div>
+                            <div class="room">B3 Seminar Hall</div>
                         </td>
-                        
-                        <!-- 3rd & 4th Period: Digital Electronics Lab -->
+
+                        <!-- 3rd & 4th Period: Finance & Accounting (2-hour continuous session) -->
                         <td class="digital-electronics">
-                            <div class="subject">Digital Electronics Lab</div>
-                            <div class="faculty">NC, BBS</div>
-                            <div class="room">B2 LG 2.3 & B2 LG 2.4</div>
-                            <!-- NOTE: 2-hour lab, students split across 2 rooms -->
+                            <div class="subject">Finance &amp; Accounting</div>
+                            <div class="faculty">ABG</div>
+                            <div class="room">B3 Seminar Hall</div>
                         </td>
                         <td class="digital-electronics">
-                            <div class="subject">Digital Electronics Lab</div>
-                            <div class="faculty">NC, BBS</div>
-                            <div class="room">B2 LG 2.3 & B2 LG 2.4</div>
-                            <!-- NOTE: Continuation of Digital Electronics Lab -->
+                            <div class="subject">Finance &amp; Accounting</div>
+                            <div class="faculty">ABG</div>
+                            <div class="room">B3 Seminar Hall</div>
                         </td>
-                        
+
                         <!-- Break Period -->
                         <td class="break-slot">BREAK</td>
-                        
-                        <!-- 5th Period: Analog Electronics Theory -->
+
+                        <!-- 5th Period: Computer Organization & Architecture -->
                         <td class="analog-electronics">
-                            <div class="subject">Analog Electronics</div>
-                            <div class="faculty">AG</div>
-                            <div class="room">B1 LG 2.6</div>
+                            <div class="subject">Computer Organization &amp; Architecture</div>
+                            <div class="faculty">NC</div>
+                            <div class="room">B1 LG 2.5</div>
                         </td>
-                        
-                        <!-- 6th Period: Data Structures Theory -->
+
+                        <!-- 6th & 7th Period: Pre-Placement Training (Programming) -->
                         <td class="data-structures">
-                            <div class="subject">Data structure & Algorithms</div>
-                            <div class="faculty">SKM</div>
-                            <div class="room">B1 LG 2.6</div>
+                            <div class="subject">Pre-Placement Training (Programming)</div>
+                            <div class="faculty">SDH, UTG, SBG, SND</div>
+                            <div class="room">B2 LG 4.5 &amp; B2 LG 4.7</div>
                         </td>
-                        
-                        <!-- 7th Period: Principles of Management -->
-                        <td class="principles-management">
-                            <div class="subject">Principles of Management</div>
-                            <div class="faculty">NP</div>
-                            <div class="room">B1 LG 2.6</div>
+                        <td class="data-structures">
+                            <div class="subject">Pre-Placement Training (Programming)</div>
+                            <div class="faculty">SDH, UTG, SBG, SND</div>
+                            <div class="room">B2 LG 4.5 &amp; B2 LG 4.7</div>
                         </td>
-                        
-                        <!-- 8th Period: EAA (Extra-curricular Activities) -->
+
+                        <!-- 8th Period: EAA -->
                         <td class="eaa">
                             <div class="subject">EAA</div>
                             <div class="faculty">-</div>
                             <div class="room">-</div>
                         </td>
                     </tr>
-                    
                     <!-- ========================================
-                         WEDNESDAY SCHEDULE
-                         ========================================
-                         Wednesday includes Aptitude training and 
-                         English/Skill Development classes.
-                         ======================================== -->
+     WEDNESDAY SCHEDULE (UPDATED)
+     ========================================
+     Source: EVEN Semester 2026 - Class Schedule (Image)
+     Key Notes:
+     - 1st & 2nd: Pre-Placement Training (Aptitude)
+     - 3rd & 4th: Essential Studies for Professionals - IV
+       (Different faculty shown per period in schedule)
+     - 6th & 7th: Skill Development for Professionals - IV
+     ======================================== -->
                     <tr>
                         <td class="day-header">WEDNESDAY</td>
-                        
+
                         <!-- 1st & 2nd Period: Pre-Placement Training (Aptitude) -->
                         <td class="pre-placement-aptitude">
                             <div class="subject">Pre-Placement Training (Aptitude)</div>
                             <div class="faculty">TM</div>
                             <div class="room">B1 AV Hall</div>
-                            <!-- NOTE: Held in Audio-Visual Hall for presentations -->
                         </td>
                         <td class="pre-placement-aptitude">
                             <div class="subject">Pre-Placement Training (Aptitude)</div>
                             <div class="faculty">TM</div>
                             <div class="room">B1 AV Hall</div>
-                            <!-- NOTE: Continuation of aptitude training -->
                         </td>
-                        
-                        <!-- 3rd & 4th Period: ESP III (English for Specific Purposes) -->
+
+                        <!-- 3rd Period: Essential Studies for Professionals - IV -->
                         <td class="esp">
-                            <div class="subject">ESP - III</div>
-                            <div class="faculty">ARC</div>
+                            <div class="subject">Essential Studies for Professionals - IV</div>
+                            <div class="faculty">ACH</div>
                             <div class="room">B1 LG 3.5</div>
-                            <!-- NOTE: English communication skills -->
                         </td>
+
+                        <!-- 4th Period: Essential Studies for Professionals - IV -->
                         <td class="esp">
-                            <div class="subject">ESP - III</div>
-                            <div class="faculty">ARC</div>
+                            <div class="subject">Essential Studies for Professionals - IV</div>
+                            <div class="faculty">ANK</div>
                             <div class="room">B1 LG 3.5</div>
-                            <!-- NOTE: Continuation of ESP session -->
                         </td>
-                        
+
                         <!-- Break Period -->
                         <td class="break-slot">BREAK</td>
-                        
-                        <!-- 5th Period: Principles of Management -->
+
+                        <!-- 5th Period: Sustainability, Climate Actions & Environmental Sciences -->
                         <td class="principles-management">
-                            <div class="subject">Principles of Management</div>
-                            <div class="faculty">NP</div>
+                            <div class="subject">Sustainability, Climate Actions &amp; Environmental Sciences</div>
+                            <div class="faculty">KM</div>
                             <div class="room">B1 LG 3.5</div>
                         </td>
-                        
-                        <!-- 6th & 7th Period: SDP III (Skill Development Program) -->
+
+                        <!-- 6th & 7th Period: Skill Development for Professionals - IV -->
                         <td class="sdp">
-                            <div class="subject">SDP - III</div>
-                            <div class="faculty">PMJ</div>
+                            <div class="subject">Skill Development for Professionals - IV</div>
+                            <div class="faculty">ASD</div>
                             <div class="room">B1 LG 3.5</div>
-                            <!-- NOTE: Soft skills and personality development -->
                         </td>
                         <td class="sdp">
-                            <div class="subject">SDP - III</div>
-                            <div class="faculty">PMJ</div>
+                            <div class="subject">Skill Development for Professionals - IV</div>
+                            <div class="faculty">ASD</div>
                             <div class="room">B1 LG 3.5</div>
-                            <!-- NOTE: Continuation of SDP session -->
                         </td>
-                        
+
                         <!-- 8th Period: EAA -->
                         <td class="eaa">
                             <div class="subject">EAA</div>
@@ -596,67 +626,67 @@
                             <div class="room">-</div>
                         </td>
                     </tr>
-                    
                     <!-- ========================================
-                         THURSDAY SCHEDULE
-                         ========================================
-                         Thursday features a 3-hour Data Structures lab 
-                         in the afternoon.
-                         ======================================== -->
+     THURSDAY SCHEDULE (UPDATED)
+     ========================================
+     Source: EVEN Semester 2026 - Class Schedule (Image)
+     Key Notes:
+     - First 4 periods are theory sessions in B3 Seminar Hall
+     - 6th & 7th period is a 2-hour AI & ML Lab session in CCFL - I
+     ======================================== -->
                     <tr>
                         <td class="day-header">THURSDAY</td>
-                        
-                        <!-- 1st Period: Digital Electronics Theory -->
-                        <td class="digital-electronics">
-                            <div class="subject">Digital Electronics</div>
-                            <div class="faculty">NC</div>
-                            <div class="room">B1 LG 2.6</div>
-                        </td>
-                        
-                        <!-- 2nd Period: Mathematics III -->
-                        <td class="mathematics">
-                            <div class="subject">Mathematics - III</div>
+
+                        <!-- 1st Period: Artificial Intelligence & Machine Learning -->
+                        <td class="pre-placement-programming">
+                            <div class="subject">Artificial Intelligence &amp; Machine Learning</div>
                             <div class="faculty">ADN</div>
-                            <div class="room">B1 LG 2.6</div>
+                            <div class="room">B3 Seminar Hall</div>
                         </td>
-                        
-                        <!-- 3rd Period: Analog Electronics Theory -->
+
+                        <!-- 2nd Period: Computer Organization & Architecture -->
                         <td class="analog-electronics">
-                            <div class="subject">Analog Electronics</div>
-                            <div class="faculty">AG</div>
-                            <div class="room">B1 LG 2.6</div>
+                            <div class="subject">Computer Organization &amp; Architecture</div>
+                            <div class="faculty">NC</div>
+                            <div class="room">B3 Seminar Hall</div>
                         </td>
-                        
-                        <!-- 4th Period: IT Workshop Theory -->
+
+                        <!-- 3rd Period: Advanced Programming (OOP) -->
                         <td class="it-workshop">
-                            <div class="subject">IT Workshop</div>
-                            <div class="faculty">MCY</div>
-                            <div class="room">B1 LG 2.6</div>
+                            <div class="subject">Advanced Programming (OOP)</div>
+                            <div class="faculty">SDH</div>
+                            <div class="room">B3 Seminar Hall</div>
                         </td>
-                        
+
+                        <!-- 4th Period: Design & Analysis of Algorithms -->
+                        <td class="digital-electronics">
+                            <div class="subject">Design &amp; Analysis of Algorithms</div>
+                            <div class="faculty">SKM</div>
+                            <div class="room">B3 Seminar Hall</div>
+                        </td>
+
                         <!-- Break Period -->
                         <td class="break-slot">BREAK</td>
-                        
-                        <!-- 5th, 6th & 7th Period: Data Structures Lab (3-hour session) -->
+
+                        <!-- 5th Period: Discrete Mathematics -->
+                        <td class="mathematics">
+                            <div class="subject">Discrete Mathematics</div>
+                            <div class="faculty">RMC</div>
+                            <div class="room">B1 LG 3.5</div>
+                        </td>
+
+                        <!-- 6th & 7th Period: AI & ML Laboratory (2-hour continuous lab) -->
                         <td class="data-structures">
-                            <div class="subject">Data structure & Algorithms Lab</div>
-                            <div class="faculty">SKM, AHS, DSD</div>
-                            <div class="room">CCFL - II</div>
-                            <!-- NOTE: 3-hour continuous lab session -->
+                            <div class="subject">Artificial Intelligence &amp; Machine Learning Laboratory</div>
+                            <div class="faculty">ADN, SKM, NP, BDP, RJC, UTG</div>
+                            <div class="room">CCFL - I</div>
                         </td>
                         <td class="data-structures">
-                            <div class="subject">Data structure & Algorithms Lab</div>
-                            <div class="faculty">SKM, AHS, DSD</div>
-                            <div class="room">CCFL - II</div>
-                            <!-- NOTE: Continuation of 3-hour lab -->
+                            <div class="subject">Artificial Intelligence &amp; Machine Learning Laboratory</div>
+                            <div class="faculty">ADN, SKM, BDP, RJC, UTG</div>
+                            <div class="room">CCFL - I</div>
                         </td>
-                        <td class="data-structures">
-                            <div class="subject">Data structure & Algorithms Lab</div>
-                            <div class="faculty">SKM, AHS, DSD</div>
-                            <div class="room">CCFL - II</div>
-                            <!-- NOTE: Final hour of 3-hour lab -->
-                        </td>
-                        
+
                         <!-- 8th Period: EAA -->
                         <td class="eaa">
                             <div class="subject">EAA</div>
@@ -664,68 +694,66 @@
                             <div class="room">-</div>
                         </td>
                     </tr>
-                    
                     <!-- ========================================
-                         FRIDAY SCHEDULE
-                         ========================================
-                         Friday starts with IT Workshop lab and 
-                         ends with theory classes.
-                         ======================================== -->
+     FRIDAY SCHEDULE (UPDATED)
+     ========================================
+     Source: EVEN Semester 2026 - Class Schedule (Image)
+     Key Notes:
+     - 1st & 2nd period: Advanced Programming (OOP) Lab (2-hour)
+     - 3rd & 4th period: DAA Lab (2-hour)
+     - Last sessions are theory in B3 Seminar Hall + EAA
+     ======================================== -->
                     <tr>
                         <td class="day-header">FRIDAY</td>
-                        
-                        <!-- 1st & 2nd Period: IT Workshop Lab -->
+
+                        <!-- 1st & 2nd Period: Advanced Programming (OOP) Laboratory -->
                         <td class="it-workshop">
-                            <div class="subject">IT Workshop Lab</div>
-                            <div class="faculty">SBG, MCY</div>
-                            <div class="room">CCFL - I</div>
-                            <!-- NOTE: 2-hour practical lab session -->
+                            <div class="subject">Advanced Programming (OOP) Laboratory</div>
+                            <div class="faculty">SND, AHS, SR, SBS</div>
+                            <div class="room">CCFL - II</div>
                         </td>
                         <td class="it-workshop">
-                            <div class="subject">IT Workshop Lab</div>
-                            <div class="faculty">SBG, MCY</div>
-                            <div class="room">CCFL - I</div>
-                            <!-- NOTE: Continuation of IT Workshop lab -->
+                            <div class="subject">Advanced Programming (OOP) Laboratory</div>
+                            <div class="faculty">SND, AHS, SR, SBS</div>
+                            <div class="room">CCFL - II</div>
                         </td>
-                        
-                        <!-- 3rd Period: Digital Electronics Theory -->
+
+                        <!-- 3rd & 4th Period: Design & Analysis of Algorithms Laboratory -->
                         <td class="digital-electronics">
-                            <div class="subject">Digital Electronics</div>
-                            <div class="faculty">NC</div>
-                            <div class="room">B1 LG 2.6</div>
+                            <div class="subject">Design &amp; Analysis of Algorithms Laboratory</div>
+                            <div class="faculty">BDP, ADN, SNM, MCY, SBG, SBS</div>
+                            <div class="room">CCFL - II</div>
                         </td>
-                        
-                        <!-- 4th Period: Data Structures Theory -->
-                        <td class="data-structures">
-                            <div class="subject">Data structure & Algorithms</div>
-                            <div class="faculty">SKM</div>
-                            <div class="room">B1 LG 2.6</div>
+                        <td class="digital-electronics">
+                            <div class="subject">Design &amp; Analysis of Algorithms Laboratory</div>
+                            <div class="faculty">BDP, ADN, SNM, MCY, SBG, SBS</div>
+                            <div class="room">CCFL - II</div>
                         </td>
-                        
+
                         <!-- Break Period -->
                         <td class="break-slot">BREAK</td>
-                        
-                        <!-- 5th Period: Analog Electronics Theory -->
-                        <td class="analog-electronics">
-                            <div class="subject">Analog Electronics</div>
-                            <div class="faculty">AG</div>
-                            <div class="room">B1 LG 2.6</div>
-                        </td>
-                        
-                        <!-- 6th Period: Mathematics III -->
+
+                        <!-- 5th Period: Discrete Mathematics -->
                         <td class="mathematics">
-                            <div class="subject">Mathematics - III</div>
+                            <div class="subject">Discrete Mathematics</div>
+                            <div class="faculty">RMC</div>
+                            <div class="room">B3 Seminar Hall</div>
+                        </td>
+
+                        <!-- 6th Period: Artificial Intelligence & Machine Learning -->
+                        <td class="pre-placement-programming">
+                            <div class="subject">Artificial Intelligence &amp; Machine Learning</div>
                             <div class="faculty">ADN</div>
-                            <div class="room">B1 LG 2.6</div>
+                            <div class="room">B3 Seminar Hall</div>
                         </td>
-                        
-                        <!-- 7th Period: IT Workshop Theory -->
-                        <td class="it-workshop">
-                            <div class="subject">IT Workshop</div>
-                            <div class="faculty">MCY</div>
-                            <div class="room">B1 LG 2.6</div>
+
+                        <!-- 7th Period: Data Analytics -->
+                        <td class="principles-management">
+                            <div class="subject">Data Analytics</div>
+                            <div class="faculty">NP</div>
+                            <div class="room">B3 Seminar Hall</div>
                         </td>
-                        
+
                         <!-- 8th Period: EAA -->
                         <td class="eaa">
                             <div class="subject">EAA</div>
@@ -733,11 +761,45 @@
                             <div class="room">-</div>
                         </td>
                     </tr>
+
                 </tbody>
             </table>
         </div>
-        
-    
+
+
     </div>
 </body>
+
+
+<script>
+    // ============================
+    // DARK MODE TOGGLE SCRIPT
+    // ============================
+
+    const themeToggle = document.getElementById("themeToggle");
+    const themeLabel = document.getElementById("themeLabel");
+
+    // Load theme on page start
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark");
+        themeLabel.textContent = "Light Mode";
+    } else {
+        themeLabel.textContent = "Dark Mode";
+    }
+
+    // Toggle theme on button click
+    themeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("dark");
+
+        if (document.body.classList.contains("dark")) {
+            localStorage.setItem("theme", "dark");
+            themeLabel.textContent = "Light Mode";
+        } else {
+            localStorage.setItem("theme", "light");
+            themeLabel.textContent = "Dark Mode";
+        }
+    });
+</script>
+
 </html>
